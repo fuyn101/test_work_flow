@@ -30,12 +30,12 @@ jobs:
     # - name: Extract Git Portable
     #   run: |
     #     7z x PortableGit-2.39.0.7z -ogit
-
+        # Move-Item -Path git -Destination package\git
     - name: Move Python and Git to target directory
       run: |
         New-Item -ItemType Directory -Path package
         Move-Item -Path $env:RUNNER_TEMP\python -Destination package\python
-        # Move-Item -Path git -Destination package\git
+
         Move-Item -Path mower-ng -Destination package\mower-ng
 
     - name: Compress files
