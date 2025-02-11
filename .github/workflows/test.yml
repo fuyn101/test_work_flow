@@ -26,14 +26,14 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 压缩整个 program 目录为 zip
-      - name: Compress program directory to zip
+      # 压缩整个 test_work_flow 目录为 zip
+      - name: Compress test_work_flow directory to zip
         run: |
-          zip -r program.zip program/
+          zip -r test_work_flow.zip test_work_flow/
         
       # 上传 zip 文件作为构建产物
       - name: Upload zip artifact
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: program-zip
-          path: program.zip
+          name: test_work_flow-zip
+          path: test_work_flow.zip
