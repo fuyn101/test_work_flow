@@ -20,7 +20,7 @@ jobs:
       # 创建虚拟环境并安装依赖
       - name: Setup Python environment and install dependencies
         run: |
-          cd mower-ng
+          cd arknights-mower
           python3 -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
