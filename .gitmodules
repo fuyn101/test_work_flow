@@ -1,0 +1,3 @@
+[submodule "arknights-mower"]
+	path = arknights-mower
+	url = https://github.com/fuyn101/arknights-mower.git
