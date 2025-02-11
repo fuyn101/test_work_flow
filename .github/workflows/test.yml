@@ -1,49 +1,42 @@
-name: Clone Repo and Package Files
+name: Build and Package
 
 on:
+
   workflow_dispatch:
 
 jobs:
-  package:
-    runs-on: windows-latest
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # 检出代码
+      - name: Checkout the repository
+        uses: actions/checkout@v3
 
-    - name: Clone mower-ng repository
-      run: |
-        git clone https://github.com/fuyn101/arknights-mower.git
+      # 拉取子模块
+      - name: Pull submodules
+        run: git submodule update --init --recursive
 
-    - name: Download Python 3.12 for Windows (Full Installer)
-      run: |
-        Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe" -OutFile "python-3.12.0-amd64.exe"
+      # 创建虚拟环境并安装依赖
+      - name: Setup Python environment and install dependencies
+        run: |
+          cd mower-ng
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+        cache:
+          paths:
+            - ~/.cache/pip
 
-    - name: Install Python 3.12
-      run: |
-        Start-Process -Wait -FilePath .\python-3.12.0-amd64.exe -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1", "Include_launcher=1", "TargetDir=$env:RUNNER_TEMP\python"
-
-    # - name: Download Git for Windows (Portable ZIP)
-    #   run: |
-    #     Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.39.0.windows.2/PortableGit-2.39.0.2-64-bit.7z" -OutFile "PortableGit-2.39.0.7z"
-
-    # - name: Extract Git Portable
-    #   run: |
-    #     7z x PortableGit-2.39.0.7z -ogit
-        # Move-Item -Path git -Destination package\git
-    - name: Move Python and Git to target directory
-      run: |
-        New-Item -ItemType Directory -Path package
-        Move-Item -Path $env:RUNNER_TEMP\python -Destination package\python
-
-        Move-Item -Path mower-ng -Destination package\mower-ng
-
-    - name: Compress files
-      run: |
-        Compress-Archive -Path package -DestinationPath package.zip
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4.6.0
-      with:
-        name: package
-        path: package.zip
+      # 压缩整个 program 目录为 zip
+      - name: Compress program directory to zip
+        run: |
+          zip -r program.zip program/
+        
+      # 上传 zip 文件作为构建产物
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: program-zip
+          path: program.zip
