@@ -33,7 +33,7 @@ jobs:
         
       # 上传 zip 文件作为构建产物
       - name: Upload zip artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: program-zip
           path: program.zip
