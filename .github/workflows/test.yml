@@ -1,39 +1,46 @@
 name: Build and Package
 
 on:
-
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      # 检出代码
-      - name: Checkout the repository
+      # 检出整个项目代码（不自动拉取子模块）
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 拉取子模块
-      - name: Pull submodules
-        run: git submodule update --init -- 'arknights-mower'
+      # 拉取指定子模块（这里只更新 arknights-mower 子模块）
+      - name: Update Specific Submodule
+        run: git submodule update --init -- "arknights-mower"
 
-      # 创建虚拟环境并安装依赖
-      - name: Setup Python environment and install dependencies
+      # 在 arknights-mower 子模块目录下创建 Python 虚拟环境并安装依赖
+      - name: Setup Python Environment and Install Dependencies
+        shell: pwsh
         run: |
-          cd arknights-mower
-          python3 -m venv venv
-          source venv/bin/activate
+          # 进入子模块目录
+          Set-Location -Path "arknights-mower"
+          # 创建虚拟环境（注意：在 Windows 下使用 python 而非 python3）
+          python -m venv venv
+          # 使用点源方式激活虚拟环境
+          .\venv\Scripts\Activate.ps1
+          # 升级 pip 并安装依赖
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 压缩整个 test_work_flow 目录为 zip
-      - name: Compress test_work_flow directory to zip
+      # 切换回仓库根目录，并压缩整个项目目录为 ZIP 文件
+      - name: Compress Entire Project Directory to ZIP
+        shell: pwsh
         run: |
-          zip -r test_work_flow.zip test_work_flow/
-        
-      # 上传 zip 文件作为构建产物
-      - name: Upload zip artifact
+          # 切换到仓库根目录（即 $GITHUB_WORKSPACE）
+          Set-Location $env:GITHUB_WORKSPACE
+          Compress-Archive -Path * -DestinationPath "project.zip"
+
+      # 上传 ZIP 文件作为构建产物
+      - name: Upload ZIP Artifact
         uses: actions/upload-artifact@v4.6.0
         with:
-          name: test_work_flow-zip
-          path: test_work_flow.zip
+          name: project-zip
+          path: project.zip
