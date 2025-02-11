@@ -23,19 +23,19 @@ jobs:
       run: |
         Start-Process -Wait -FilePath .\python-3.12.0-amd64.exe -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1", "Include_launcher=1", "TargetDir=$env:RUNNER_TEMP\python"
 
-    - name: Download Git for Windows (Portable ZIP)
-      run: |
-        Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.39.0.windows.2/PortableGit-2.39.0.2-64-bit.7z" -OutFile "PortableGit-2.39.0.7z"
+    # - name: Download Git for Windows (Portable ZIP)
+    #   run: |
+    #     Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.39.0.windows.2/PortableGit-2.39.0.2-64-bit.7z" -OutFile "PortableGit-2.39.0.7z"
 
-    - name: Extract Git Portable
-      run: |
-        7z x PortableGit-2.39.0.7z -ogit
+    # - name: Extract Git Portable
+    #   run: |
+    #     7z x PortableGit-2.39.0.7z -ogit
 
     - name: Move Python and Git to target directory
       run: |
         New-Item -ItemType Directory -Path package
         Move-Item -Path $env:RUNNER_TEMP\python -Destination package\python
-        Move-Item -Path git -Destination package\git
+        # Move-Item -Path git -Destination package\git
         Move-Item -Path mower-ng -Destination package\mower-ng
 
     - name: Compress files
