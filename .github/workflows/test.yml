@@ -43,7 +43,7 @@ jobs:
         Compress-Archive -Path package -DestinationPath package.zip
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4.6.0
       with:
         name: package
         path: package.zip
