@@ -25,9 +25,6 @@ jobs:
           source venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
-        cache:
-          paths:
-            - ~/.cache/pip
 
       # 压缩整个 program 目录为 zip
       - name: Compress program directory to zip
