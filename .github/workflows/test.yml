@@ -15,7 +15,7 @@ jobs:
 
       # 拉取子模块
       - name: Pull submodules
-        run: git submodule update --init --recursive
+        run: git submodule update --init -- 'arknights-mower'
 
       # 创建虚拟环境并安装依赖
       - name: Setup Python environment and install dependencies
